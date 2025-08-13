@@ -11,10 +11,13 @@ run: build
 
 all: run
 
+test:
+	go test ./internal/morestrings
+
 clean:
 	rm -rf $(BIN)
 
 fclean: clean
 
-.PHONY: all build run clean fclean
+.PHONY: all build run clean fclean test
 
