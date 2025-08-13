@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/re-miranda/go_http_api/internal/morestrings"
+)
 
 func main(){
-	fmt.Println("Hello world!")
+	fmt.Println(morestrings.ReverseRunes("Hello world!"))
 }
