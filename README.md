@@ -58,6 +58,14 @@ make clean
 
 ---
 
+##  API Endpoint
+
+- **GET /healthz** -> {"status": "ok"}
+- **GET /v1/ping** -> pong
+- **POST /v1/reverse** -> {"input": "your_input", "output": "your_input_reversed"}
+
+---
+
 ## License
 
 BSD-2-Clause © 2025 Renato Miranda Goncalves. See LICENSE for details.
