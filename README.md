@@ -40,11 +40,13 @@ cd go_http_api
 go mod download
 
 # run
-go run ./cmd/api
+make run
 
-# test & vet
-go test ./...
-go vet ./...
+# test
+make test
+
+# clean
+make clean
 ```
 ---
 
