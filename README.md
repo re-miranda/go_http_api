@@ -66,18 +66,27 @@ make clean
 
 ### Error format
 All non-2xx responses use the same JSON shape:
-
+```
 {
   "error": "<human-readable HTTP status code applicable>",
   "details": { ... } // optional
 }
+```
 
 Examples:
-400 invalid JSON:
-{ "error": "Bad Request", "details": ["json: unknown field \"inpput\""] }
 
-405 wrong method:
-{ "error": "Method not allowed" }
+- 400 invalid JSON:
+```
+{
+    "error" : "Bad Request",
+    "details" : [ "json: unknown field \"wrong_field\"" ]
+}
+```
+
+- 405 wrong method:
+```
+{ "error" : "Method not allowed" }
+```
 
 ---
 
