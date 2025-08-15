@@ -13,7 +13,7 @@ all: run
 
 test:
 	go test ./internal/v1/core
-	go test ./internal/v1/http/handlers
+	go test ./internal/v1/httpx/handlers
 
 clean:
 	rm -rf $(BIN)

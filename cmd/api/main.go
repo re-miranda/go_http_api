@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"github.com/re-miranda/go_http_api/internal/v1/http/handlers"
+	"github.com/re-miranda/go_http_api/internal/v1/httpx/handlers"
 )
 
 func main(){
