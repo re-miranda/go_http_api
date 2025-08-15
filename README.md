@@ -64,6 +64,21 @@ make clean
 - **GET /v1/ping** -> pong
 - **POST /v1/reverse** -> {"input": "your_input", "output": "your_input_reversed"}
 
+### Error format
+All non-2xx responses use the same JSON shape:
+
+{
+  "error": "<human-readable HTTP status code applicable>",
+  "details": { ... } // optional
+}
+
+Examples:
+400 invalid JSON:
+{ "error": "Bad Request", "details": ["json: unknown field \"inpput\""] }
+
+405 wrong method:
+{ "error": "Method not allowed" }
+
 ---
 
 ## License
