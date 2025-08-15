@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 	"encoding/json"
-	"github.com/re-miranda/go_http_api/internal/v1/reverse"
+	"github.com/re-miranda/go_http_api/internal/v1/core"
 )
 
 func ReverseHandler(w http.ResponseWriter, r *http.Request) {
@@ -29,5 +29,5 @@ func ReverseHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{"input": m.Input, "output": reverse.ReverseRunes(m.Input)})
+	json.NewEncoder(w).Encode(map[string]string{"input": m.Input, "output": core.ReverseRunes(m.Input)})
 }

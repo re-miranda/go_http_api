@@ -1,4 +1,4 @@
-package reverse
+package core
 
 import "testing"
 
@@ -11,7 +11,7 @@ func TestReverseRunes(t *testing.T) {
         {"", ""},
     }
     for _, c := range cases {
-        got := reverseRunes(c.in)
+        got := ReverseRunes(c.in)
         if got != c.want {
             t.Errorf("ReverseRunes(%q) == %q, want %q", c.in, got, c.want)
         }

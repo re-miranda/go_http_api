@@ -12,7 +12,8 @@ run: build
 all: run
 
 test:
-	go test ./internal/morestrings
+	go test ./internal/v1/core
+	go test ./internal/v1/http/handlers
 
 clean:
 	rm -rf $(BIN)
