@@ -2,16 +2,14 @@ package main
 
 import (
 	"fmt"
-	"net/http"
-	"github.com/re-miranda/go_http_api/internal/v1/httpx/handlers"
+	"flag"
+	"github.com/re-miranda/go_http_api/internal/v1/httpx"
 )
 
+var config_file = flag.String("config_file", "Default", "Path to server config file")
+
 func main(){
-	http.HandleFunc("/healthz", handlers.HealthzHandler)
-	http.HandleFunc("/v1/ping", handlers.PingHandler)
-	http.HandleFunc("/v1/reverse", handlers.ReverseHandler)
-
-	fmt.Println("server is running")
-
-	http.ListenAndServe(":8080", nil)
+	flag.Parse()
+	fmt.Println(*config_file)
+	httpx.Router()
 }
