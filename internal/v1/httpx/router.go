@@ -1,16 +1,24 @@
 package httpx
 
 import (
+	"fmt"
 	"net/http"
 	"github.com/re-miranda/go_http_api/internal/v1/httpx/handlers"
-	"fmt"
 )
 
-func Router() {
-	http.HandleFunc("/healthz", handlers.HealthzHandler)
-	http.HandleFunc("/v1/ping", handlers.PingHandler)
-	http.HandleFunc("/v1/reverse", handlers.ReverseHandler)
+func Router(config string) error{
+	fmt.Println(config)
 
-	fmt.Println("server is running")
-	http.ListenAndServe(":8080", nil)
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/healthz", handlers.HealthzHandler)
+	mux.HandleFunc("/v1/ping", handlers.PingHandler)
+	mux.HandleFunc("/v1/reverse", handlers.ReverseHandler)
+
+	srv := http.Server {
+		Addr: ":8080",
+		Handler: mux,
+	}
+	fmt.Println("Server is starting")
+	return srv.ListenAndServe()
 }
