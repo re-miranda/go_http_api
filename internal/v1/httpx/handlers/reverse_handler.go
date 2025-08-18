@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"encoding/json"
 	"github.com/re-miranda/go_http_api/internal/v1/core"
+	"github.com/julienschmidt/httprouter"
 )
 
-func ReverseHandler(w http.ResponseWriter, r *http.Request) {
+func ReverseHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	defer r.Body.Close()
 
 	if r.Method != http.MethodPost {
