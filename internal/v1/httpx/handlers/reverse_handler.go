@@ -11,7 +11,7 @@ func ReverseHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	defer r.Body.Close()
 
 	if r.Method != http.MethodPost {
-		APIerrorJSON(w, "Method not allowed", http.StatusMethodNotAllowed)
+		APIErrorJSON(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -24,7 +24,7 @@ func ReverseHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	var m Message
 	err := dec.Decode(&m)
 	if err != nil {
-		APIerrorJSON(w, "Bad Request", http.StatusBadRequest, err.Error())
+		APIErrorJSON(w, "Bad Request", http.StatusBadRequest, err.Error())
 		return
 	}
 
