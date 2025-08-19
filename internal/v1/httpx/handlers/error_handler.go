@@ -10,7 +10,7 @@ type APIError struct {
     Details interface{} `json:"details,omitempty"`
 }
 
-func	APIerrorJSON(w http.ResponseWriter, status string, code int, details...any) {
+func	APIErrorJSON(w http.ResponseWriter, status string, code int, details...any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	if len(details) != 0 {

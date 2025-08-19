@@ -71,7 +71,7 @@ func TestReverseHandler(t *testing.T) {
 			}
 
 			rr := httptest.NewRecorder()
-			ReverseHandler(rr, req)
+			ReverseHandler(rr, req, nil)
 
 			if rr.Code != tt.expectedStatus {
 				t.Errorf("Expected status code %d, got %d", tt.expectedStatus, rr.Code)

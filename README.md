@@ -20,10 +20,16 @@ This phase optimizes for **clarity, maintainability, and performance** over conv
 
 ## Current scope
 
-- `net/http` + a lightweight router (e.g., `chi` or `httprouter`)
+- `net/http` + `httprouter`
 - Simple request/response flow and basic middleware (logging and recovery)
 - Health check endpoint and one example resource
 - Clear project layout
+
+---
+
+### Router
+
+`net/http` + `httprouter` — escolha orientada a **muitas rotas**, **baixa alocação** e **patterns de rota expressivos** (ex.: `/v1/users/:id`, `/*filepath`)
 
 ---
 

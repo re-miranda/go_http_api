@@ -4,13 +4,14 @@ import (
 	"net/http"
 	"encoding/json"
 	"github.com/re-miranda/go_http_api/internal/v1/core"
+	"github.com/julienschmidt/httprouter"
 )
 
-func ReverseHandler(w http.ResponseWriter, r *http.Request) {
+func ReverseHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	defer r.Body.Close()
 
 	if r.Method != http.MethodPost {
-		APIerrorJSON(w, "Method not allowed", http.StatusMethodNotAllowed)
+		APIErrorJSON(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -23,7 +24,7 @@ func ReverseHandler(w http.ResponseWriter, r *http.Request) {
 	var m Message
 	err := dec.Decode(&m)
 	if err != nil {
-		APIerrorJSON(w, "Bad Request", http.StatusBadRequest, err.Error())
+		APIErrorJSON(w, "Bad Request", http.StatusBadRequest, err.Error())
 		return
 	}
 
