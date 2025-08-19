@@ -13,10 +13,17 @@ type Config struct {
 	WriteTimeout int;
 	IdleTimeout int;
 	Router *httprouter.Router;
+	Config_path string;
 }
 
 func	CreateAndStartServer(config Config) error{
-	fmt.Println("Server config: ", config)
+	fmt.Println(
+		"Server config:",
+		"\n\tPort: ", config.Addr,
+		"\n\tWriteTimeout", config.WriteTimeout,
+		"\n\tReadTimeout", config.ReadTimeout,
+		"\n\tIdleTimeout", config.IdleTimeout,
+	)
 
 	srv := &http.Server{
 		Addr: config.Addr,

@@ -7,8 +7,8 @@ import (
 	"github.com/re-miranda/go_http_api/internal/v1/httpx/handlers"
 )
 
-func Router(config string) *httprouter.Router{
-	fmt.Println(config)
+func Router(config Config) *httprouter.Router{
+	fmt.Println("Router config:", config.Config_path)
 
 	mux := httprouter.New()
 	mux.NotFound = http.HandlerFunc(handlers.NotFoundHandler)
