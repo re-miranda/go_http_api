@@ -13,6 +13,7 @@ all: run
 
 test:
 	go test ./internal/v1/core
+	go test ./internal/v1/httpx
 	go test ./internal/v1/httpx/handlers
 
 clean:
@@ -21,4 +22,3 @@ clean:
 fclean: clean
 
 .PHONY: all build run clean fclean test
-

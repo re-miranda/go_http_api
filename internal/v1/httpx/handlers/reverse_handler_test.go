@@ -6,12 +6,21 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"github.com/julienschmidt/httprouter"
 )
 
 func TestReverseHandler(t *testing.T) {
+	// Setup router for testing
+	router := httprouter.New()
+	router.POST("/v1/reverse", ReverseHandler)
+	router.MethodNotAllowed = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		APIErrorJSON(w, "Method not allowed", http.StatusMethodNotAllowed)
+	})
+
 	tests := []struct {
 		name           string
 		method         string
+		contentType    string
 		body           string
 		expectedStatus int
 		expectedBody   map[string]interface{}
@@ -20,14 +29,33 @@ func TestReverseHandler(t *testing.T) {
 		{
 			name:           "GET method should return 405",
 			method:         "GET",
+			contentType:    "",
 			body:           "",
 			expectedStatus: http.StatusMethodNotAllowed,
 			expectedBody:   map[string]interface{}{"error": "Method not allowed"},
 		},
-		// 400 Bad Request scenarios
+		// 400 Bad Request - Content-Type validation
+		{
+			name:           "Missing Content-Type should return 400",
+			method:         "POST",
+			contentType:    "",
+			body:           `{"input":"test"}`,
+			expectedStatus: http.StatusBadRequest,
+			expectedBody:   map[string]interface{}{"error": "Bad Request", "details": []interface{}{"Content-Type must be application/json"}},
+		},
+		{
+			name:           "Wrong Content-Type should return 400",
+			method:         "POST",
+			contentType:    "text/plain",
+			body:           `{"input":"test"}`,
+			expectedStatus: http.StatusBadRequest,
+			expectedBody:   map[string]interface{}{"error": "Bad Request", "details": []interface{}{"Content-Type must be application/json"}},
+		},
+		// 400 Bad Request - JSON validation
 		{
 			name:           "Empty POST body should return 400",
 			method:         "POST",
+			contentType:    "application/json",
 			body:           "",
 			expectedStatus: http.StatusBadRequest,
 			expectedBody:   map[string]interface{}{"error": "Bad Request", "details": []interface{}{"EOF"}},
@@ -35,6 +63,7 @@ func TestReverseHandler(t *testing.T) {
 		{
 			name:           "Invalid JSON should return 400",
 			method:         "POST",
+			contentType:    "application/json",
 			body:           `{"input":hello}`,
 			expectedStatus: http.StatusBadRequest,
 			expectedBody:   map[string]interface{}{"error": "Bad Request", "details": []interface{}{"invalid character 'h' looking for beginning of value"}},
@@ -42,6 +71,7 @@ func TestReverseHandler(t *testing.T) {
 		{
 			name:           "Unknown field should return 400",
 			method:         "POST",
+			contentType:    "application/json",
 			body:           `{"inpput":""}`,
 			expectedStatus: http.StatusBadRequest,
 			expectedBody:   map[string]interface{}{"error": "Bad Request", "details": []interface{}{"json: unknown field \"inpput\""}},
@@ -50,6 +80,7 @@ func TestReverseHandler(t *testing.T) {
 		{
 			name:           "Empty input should return empty output",
 			method:         "POST",
+			contentType:    "application/json",
 			body:           `{}`,
 			expectedStatus: http.StatusOK,
 			expectedBody:   map[string]interface{}{"input": "", "output": ""},
@@ -57,21 +88,30 @@ func TestReverseHandler(t *testing.T) {
 		{
 			name:           "Valid input should return reversed output",
 			method:         "POST",
+			contentType:    "application/json",
 			body:           `{"input":"hello"}`,
 			expectedStatus: http.StatusOK,
 			expectedBody:   map[string]interface{}{"input": "hello", "output": "olleh"},
+		},
+		{
+			name:           "Content-Type with charset should be accepted",
+			method:         "POST",
+			contentType:    "application/json; charset=utf-8",
+			body:           `{"input":"world"}`,
+			expectedStatus: http.StatusOK,
+			expectedBody:   map[string]interface{}{"input": "world", "output": "dlrow"},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			req := httptest.NewRequest(tt.method, "/v1/reverse", bytes.NewBufferString(tt.body))
-			if tt.method == "POST" {
-				req.Header.Set("Content-Type", "application/json")
+			if tt.contentType != "" {
+				req.Header.Set("Content-Type", tt.contentType)
 			}
 
 			rr := httptest.NewRecorder()
-			ReverseHandler(rr, req, nil)
+			router.ServeHTTP(rr, req)
 
 			if rr.Code != tt.expectedStatus {
 				t.Errorf("Expected status code %d, got %d", tt.expectedStatus, rr.Code)
@@ -110,5 +150,36 @@ func TestReverseHandler(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestMaxBytesReader(t *testing.T) {
+	router := httprouter.New()
+	router.POST("/v1/reverse", ReverseHandler)
+
+	// Create a large payload (over 1MB)
+	largeInput := make([]byte, 1048577) // 1MB + 1 byte
+	for i := range largeInput {
+		largeInput[i] = 'a'
+	}
+	body := `{"input":"` + string(largeInput) + `"}`
+
+	req := httptest.NewRequest("POST", "/v1/reverse", bytes.NewBufferString(body))
+	req.Header.Set("Content-Type", "application/json")
+
+	rr := httptest.NewRecorder()
+	router.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("Expected status code %d for oversized body, got %d", http.StatusBadRequest, rr.Code)
+	}
+
+	var response map[string]interface{}
+	if err := json.Unmarshal(rr.Body.Bytes(), &response); err != nil {
+		t.Fatalf("Failed to unmarshal response: %v", err)
+	}
+
+	if _, ok := response["error"]; !ok {
+		t.Errorf("Expected error field in response for oversized body")
 	}
 }
