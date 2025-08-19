@@ -13,6 +13,9 @@ func Router(config string, done chan string) error{
 
 	// Create and set multiplexer (router)
 	mux := httprouter.New()
+	mux.NotFound = http.HandlerFunc(handlers.NotFoundHandler)
+	mux.MethodNotAllowed = http.HandlerFunc(handlers.NotFoundHandler)
+	mux.HandleMethodNotAllowed = true
 	mux.GET("/healthz", handlers.HealthzHandler)
 	mux.GET("/v1/ping", handlers.PingHandler)
 	mux.POST("/v1/reverse", handlers.ReverseHandler)

@@ -24,3 +24,11 @@ func	APIErrorJSON(w http.ResponseWriter, status string, code int, details...any)
 		Status:   status,
 	})
 }
+
+func	NotFoundHandler(w http.ResponseWriter, r *http.Request) {
+    APIErrorJSON(w, "Not Found", http.StatusNotFound)
+}
+
+func	MethodNotAllowedHandler(w http.ResponseWriter, r *http.Request) {
+    APIErrorJSON(w, "Method not allowed", http.StatusMethodNotAllowed)
+}
