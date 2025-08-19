@@ -1,20 +1,14 @@
 package handlers
 
 import (
-	"net/http"
 	"encoding/json"
-	"github.com/re-miranda/go_http_api/internal/v1/core"
+	"net/http"
 	"github.com/julienschmidt/httprouter"
+	"github.com/re-miranda/go_http_api/internal/v1/core"
 )
 
 func ReverseHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	defer r.Body.Close()
-
-	if r.Method != http.MethodPost {
-		APIErrorJSON(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
 	type Message struct {
 		Input string `json:"input"`
 	}
