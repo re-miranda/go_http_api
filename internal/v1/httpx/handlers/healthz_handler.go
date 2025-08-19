@@ -7,6 +7,7 @@ import (
 )
 
 func HealthzHandler (w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	defer r.Body.Close()
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"status": "ok"})

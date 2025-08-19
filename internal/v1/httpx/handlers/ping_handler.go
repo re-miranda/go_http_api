@@ -7,5 +7,6 @@ import (
 )
 
 func PingHandler (w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	defer r.Body.Close()
 	fmt.Fprintf(w, "pong")
 }
