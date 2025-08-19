@@ -17,11 +17,10 @@ func main(){
 		WriteTimeout: 10,
 		IdleTimeout: 60,
 	}
-
-	router := httpx.Router(*config_arg)
+	config.Router = httpx.Router(*config_arg)
 
 	fmt.Println("Server is starting")
-	err := httpx.CreateAndStartServer(config, router)
+	err := httpx.CreateAndStartServer(config)
 	if err != nil {
 		fmt.Println("Error on server startup: ", err)
 	}
