@@ -11,13 +11,8 @@ var config_arg = flag.String("config", "Default", "Path to server config file")
 func main(){
 	flag.Parse()
 
-	var config httpx.Config = httpx.Config{
-		Addr: ":8080",
-		ReadTimeout: 5,
-		WriteTimeout: 10,
-		IdleTimeout: 60,
-		Config_path: *config_arg,
-	}
+	var config httpx.Config
+	config.FromFile(*config_arg)
 	config.Router = httpx.Router(config)
 
 	fmt.Println("Server is starting")

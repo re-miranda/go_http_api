@@ -35,3 +35,13 @@ func	CreateAndStartServer(config Config) error{
 
 	return srv.ListenAndServe()
 }
+
+func	(cfg Config)FromFile(file_path string) {
+	if file_path == "Default" {
+		cfg.Addr = ":8080"
+		cfg.ReadTimeout = 5
+		cfg.WriteTimeout = 10
+		cfg.IdleTimeout = 60
+		cfg.Config_path = file_path
+	}
+}
