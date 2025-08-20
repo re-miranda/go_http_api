@@ -12,11 +12,8 @@ func main(){
 	flag.Parse()
 
 	var config httpx.Config
-	config.FromFile(*config_arg)
-	config.Router = httpx.Router(config)
-
-	fmt.Println("Server is starting")
-	err := httpx.CreateAndStartServer(config)
+	config.LoadFromFile(*config_arg)
+	err := config.CreateAndStartServers()
 	if err != nil {
 		fmt.Println("Error on server startup: ", err)
 	}
