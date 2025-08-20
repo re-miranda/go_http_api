@@ -1,71 +1,52 @@
 package httpx
 
 import (
-	"fmt"
 	"net/http"
 	"time"
-	"github.com/julienschmidt/httprouter"
+	"fmt"
 )
 
-type Config []struct {
-	Name string
-	Addr string
-	ReadTimeout int
-	WriteTimeout int
-	IdleTimeout int
-	Router *httprouter.Router
-	Server *http.Server
+type Server []struct {
+	name string
+	srv *http.Server
 }
 
-func	(cfg *Config)LoadFromFile(file_path string) {
-	default_routes := "Default"
-	if file_path == "Default" {
-		cfg.newServerConfig(default_routes, ":8080", default_routes, 5, 10, 60)
-		cfg.newServerConfig(default_routes, ":8081", default_routes, 5, 10, 60)
-	}
-}
-
-func	(cfg *Config)newServerConfig(name, addr, routes string, rd_time, wt_time, idl_time int) {
-	*cfg = append(*cfg, struct{
-		Name string
-		Addr string
-		ReadTimeout int
-		WriteTimeout int
-		IdleTimeout int
-		Router *httprouter.Router
-		Server *http.Server
-	}{
-		Name: name,
-		Addr: addr,
-		ReadTimeout: rd_time,
-		WriteTimeout: wt_time,
-		IdleTimeout: idl_time,
-		Router: Router(routes),
-		Server: nil,
-	})
-}
-
-func	(cfg *Config)CreateAndStartServers() error{
+func	(server *Server)CreateAndStartServers(server_config Server_config, router_config Router_config) error{
 	error_ch := make(chan error)
 
-	for _, n := range *cfg {
-		fmt.Println(
-			"Server config:", n.Name,
-			"\n\tPort: ", n.Addr,
-			"\n\tWriteTimeout", n.WriteTimeout,
-			"\n\tReadTimeout", n.ReadTimeout,
-			"\n\tIdleTimeout", n.IdleTimeout,
-			"\n",
-		)
-		n.Server = &http.Server{
-			Addr: n.Addr,
-			Handler: n.Router,
-			ReadTimeout: time.Second * time.Duration(n.ReadTimeout),
-			IdleTimeout: time.Second * time.Duration(n.IdleTimeout),
-			WriteTimeout: time.Second * time.Duration(n.WriteTimeout),
-		}
-		go func(){error_ch <- n.Server.ListenAndServe()}()
+
+	for i,_ := range server_config {
+		server.newServer(server_config, router_config, i)
+		printServerConfig(server_config, i)
+		go func(){error_ch <- (*server)[i].srv.ListenAndServe()}()
 	}
 
 	return <- error_ch
+}
+
+func	(srv *Server)newServer(server_config Server_config, router_config Router_config, index int) {
+	*srv = append(*srv, struct{
+		name string
+		srv *http.Server
+	}{
+		name: server_config[index].name,
+		srv: &http.Server{
+			Addr: server_config[index].addr,
+			Handler: router_config[index].router,
+			ReadTimeout: time.Second * server_config[index].readTimeout,
+			IdleTimeout: time.Second * server_config[index].idleTimeout,
+			WriteTimeout: time.Second * server_config[index].writeTimeout,
+		},
+	})
+}
+
+func	printServerConfig(server_config Server_config, index int){
+	fmt.Println(
+		"Server config:", server_config[index].name,
+		"\n\tPort: ", server_config[index].addr,
+		"\n\tWriteTimeout", int(server_config[index].writeTimeout),
+		"\n\tReadTimeout", int(server_config[index].readTimeout),
+		"\n\tIdleTimeout", int(server_config[index].idleTimeout),
+		"\n",
+	)
 }
