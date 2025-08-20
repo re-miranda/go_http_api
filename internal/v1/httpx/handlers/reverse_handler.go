@@ -13,8 +13,6 @@ type Message struct {
 }
 
 func ReverseHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	defer r.Body.Close()
-
 	// Enforce Content-Type: application/json
 	contentType := r.Header.Get("Content-Type")
 	if !strings.HasPrefix(contentType, "application/json") {
