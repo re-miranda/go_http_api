@@ -28,12 +28,6 @@ This phase optimizes for **clarity, maintainability, and performance** over conv
 
 ---
 
-### Router
-
-`net/http` + `httprouter` — escolha orientada a **muitas rotas**, **baixa alocação** e **patterns de rota expressivos** (ex.: `/v1/users/:id`, `/*filepath`)
-
----
-
 ## Quick start
 
 **Prerequisite:** Go 1.22+
