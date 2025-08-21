@@ -6,12 +6,23 @@ import (
 	"github.com/re-miranda/go_http_api/internal/v1/httpx/handlers"
 )
 
-func newRouter(params string) *httprouter.Router{
+func newRouter(routes []RoutesJSON) *httprouter.Router{
 	router := newMux()
 
-	router.GET("/healthz", handlers.HealthzHandler)
-	router.GET("/v1/ping", handlers.PingHandler)
-	router.POST("/v1/reverse", handlers.ReverseHandler)
+	for _, n := range routes {
+		// Get handler and return if not found
+		handler := getHandler(n.Handler)
+		if handler == nil {
+			return nil
+		}
+
+		switch n.Method {
+			case "GET":
+			router.GET(n.Path, handler)
+			case "POST":
+			router.POST(n.Path, handler)
+		}
+	}
 
 	return router
 }
@@ -23,4 +34,16 @@ func	newMux() *httprouter.Router{
 	mux.HandleMethodNotAllowed = true
 
 	return mux
+}
+
+func getHandler(handlerName string) func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	switch handlerName {
+		case "HealthzHandler":
+		return handlers.HealthzHandler
+		case "PingHandler":
+		return handlers.PingHandler
+		case "ReverseHandler":
+		return handlers.ReverseHandler
+	}
+	return nil
 }

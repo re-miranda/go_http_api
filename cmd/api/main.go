@@ -12,12 +12,16 @@ func main(){
 	flag.Parse()
 
 	var server_config httpx.Server_config
-	server_config.LoadFromFile(*config_arg)
+	err := server_config.LoadFromFile(*config_arg)
+	if err != nil {
+		fmt.Println("Error loading server config: ", err.Error())
+		return
+	}
 
 	var server httpx.Server
-	err := server.CreateAndStartServers(server_config)
+	err = server.CreateAndStartServers(server_config)
 	if err != nil {
-		fmt.Println("Error on server startup: ", err)
+		fmt.Println("Error on server startup: ", err.Error())
 	}
 
 	fmt.Println("Server shutting down")

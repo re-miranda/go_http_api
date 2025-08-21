@@ -1,0 +1,47 @@
+{
+	"Global":{
+		"Name": "Go API",
+		"ReadTimeout": 5,
+		"WriteTimeout": 10,
+		"IdleTimeout": 60
+	},
+	"Servers":[
+		{
+			"Name":	"Reverse API",
+			"Host": "0.0.0.0",
+			"Port": "8080",
+			"Routes": [
+				{
+					"Path": "/healthz",
+					"Method": "GET",
+					"Handler": "HealthzHandler"
+				},
+				{
+					"Path": "/v1/reverse",
+					"Method": "POST",
+					"Handler": "ReverseHandler"
+				}
+			]
+		},
+		{
+			"Name":	"Ping API",
+			"Host": "0.0.0.0",
+			"Port": "8081",
+			"ReadTimeout": 10,
+			"WriteTimeout": 20,
+			"IdleTimeout": 120,
+			"Routes": [
+				{
+					"Path": "/healthz",
+					"Method": "GET",
+					"Handler": "HealthzHandler"
+				},
+				{
+					"Path": "/v1/ping",
+					"Method": "GET",
+					"Handler": "PingHandler"
+				}
+			]
+		}
+	]
+}
