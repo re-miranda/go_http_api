@@ -11,14 +11,11 @@ var config_arg = flag.String("config", "Default", "Path to server config file")
 func main(){
 	flag.Parse()
 
-	var router_config httpx.Router_config
-	router_config.LoadFromFile(*config_arg)
-
 	var server_config httpx.Server_config
 	server_config.LoadFromFile(*config_arg)
 
 	var server httpx.Server
-	err := server.CreateAndStartServers(server_config, router_config)
+	err := server.CreateAndStartServers(server_config)
 	if err != nil {
 		fmt.Println("Error on server startup: ", err)
 	}

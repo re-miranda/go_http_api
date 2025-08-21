@@ -1,35 +1,49 @@
 package httpx
 
-import "time"
+import (
+	"time"
+	"github.com/julienschmidt/httprouter"
+)
 
 type Server_config []struct {
-	name string
-	addr string
-	readTimeout time.Duration
-	writeTimeout time.Duration
-	idleTimeout time.Duration
+	name			string
+	host			string
+	port			string
+	logLocation		string
+	logLevel		int
+	readTimeout		time.Duration
+	writeTimeout	time.Duration
+	idleTimeout		time.Duration
+	router			*httprouter.Router
 }
 
 func	(cfg *Server_config)LoadFromFile(file_path string) {
-	// placeholder test of two servers
 	if file_path == "Default" {
-		cfg.newServerConfig(file_path, ":8080", 5, 10, 60)
-		cfg.newServerConfig(file_path, ":8080", 5, 10, 60)
+		router := newRouter("router_json")
+		cfg.newServerConfig(file_path, "0.0.0.0", "8080", "", 0, 5, 10, 60, router)
 	}
 }
 
-func	(cfg *Server_config)newServerConfig(name, addr string, rd_time, wt_time, idl_time int) {
+func	(cfg *Server_config)newServerConfig(name, host, port, logLocation string, logLevel, rd_time, wt_time, idl_time int, router *httprouter.Router) {
 	*cfg = append(*cfg, struct{
-		name string
-		addr string
-		readTimeout time.Duration
-		writeTimeout time.Duration
-		idleTimeout time.Duration
+		name			string
+		host			string
+		port			string
+		logLocation		string
+		logLevel		int
+		readTimeout		time.Duration
+		writeTimeout	time.Duration
+		idleTimeout		time.Duration
+		router			*httprouter.Router
 	}{
-		name: name,
-		addr: addr,
-		readTimeout: time.Duration(rd_time),
-		writeTimeout: time.Duration(wt_time),
-		idleTimeout: time.Duration(idl_time),
+		name:			name,
+		host:			host,
+		port:			port,
+		logLocation:	logLocation,
+		logLevel:		logLevel,
+		readTimeout:	time.Duration(rd_time),
+		writeTimeout:	time.Duration(wt_time),
+		idleTimeout:	time.Duration(idl_time),
+		router:			router,
 	})
 }
