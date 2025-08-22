@@ -1,64 +1,76 @@
-# A Minimal API in Go
+# API minimalista em Go
 
-> **Status:** Phase 1 — learning project focused on clarity, maintainability, and performance with multi-server configuration support.
+> **Status:** Fase 1 — Projeto de aprendizado com foco em manutenibilidade e performance, com suporte à configuração de múltiplos servidores.
 
-![Go](https://img.shields.io/badge/Go-1.22%2B-00ADD8?logo=go)
-![Status](https://img.shields.io/badge/status-experimental-blueviolet)
-[![License](https://img.shields.io/badge/license-BSD--2--Clause-lightgrey)](LICENSE)
+## Highlights
 
-## Why minimal?
-
-For this API, I’m deliberately using Go’s standard library with a **lightweight router** (no full framework). I evaluated options like **Gin** and **Echo**—they’re powerful and convenient, but introduce extra abstractions and dependencies. For this project’s goals, minimal wins:
-
-- **Lean & transparent:** Easier to read, reason about, and maintain
-- **Low onboarding cost:** New contributors don’t need to learn a framework first; just Go
-- **Closer to the metal:** Deepens understanding of Go’s native HTTP primitives
-
-This phase optimizes for **clarity, maintainability, and performance** over convenience.
+- Não utiliza nenhum framework
+- Escalável com o httprouter
+- Fácil configuração utilizando arquivo json
+- Múltiplos servidores com regras e rotas independentes específicas e/ou globais
 
 ---
 
-## Current scope
+## Por que minimalista?
 
-- `net/http` + `httprouter` for efficient routing with low memory allocation
-- **Multi-server configuration:** Run multiple API servers with different endpoints on different ports from a single binary
-- JSON-based configuration for flexible server setup
-- Simple request/response flow with proper error handling
-- Comprehensive test coverage for handlers
+> Menos overhead para a manutenção do código e ganhos de performance.
+
+Além do motivo principal, o objetivo do projeto é me familiarizar com a linguagem Go e seus primitivos HTTP.  
+Essa escolha por uma abordagem minimalista, sem frameworks, atende a esses objetivos principais e também traz outras vantagens:
+
+- **Código curto:** Mais fácil de ler, entender e manter
+- **Menor barreira de entrada:** Novos contribuidores não precisam aprender um framework primeiro; só Go
+
+---
+
+## Funcionamento
+
+Ao ser executado o programa irá ler as configurações de servidor a partir de um arquivo JSON.  
+O arquivo de configuração deve estar formatado em JSON conforme o exemplo neste README.
+
+Dados sobre os servidores (endereço ip, porta, timeouts, métodos e rotas) são dinamicamente carregados e validados.
+
+Por fim, a execução dos servidores é feita de forma simultânea, utilizando _goroutines_ e _channels_
 
 ---
 
 ## Quick start
 
-**Prerequisite:** Go 1.22+
+**Pré-requisitos:** Go 1.22+
 
 ```bash
-# clone
+# clonar
 git clone https://github.com/re-miranda/go_http_api.git
 cd go_http_api
 
-# ensure modules are ready
+# certificar que módulos estão disponíveis
 go mod download
 
-# run with default config
+# rodar com as configurações padrão (api_config.json)
 make run
 
-# run with custom config
+# rodar especificando seu próprio arquivo de configuração
 ./bin/api -config api_config.json
 
-# test
+# teste
 make test
 
-# clean
+# limpar
 make clean
 ```
 ---
 
-## Configuration
+## Configuração
 
-The API supports flexible configuration through JSON files. By default, it runs two servers on different ports:
+A API facilita a configuração por meio de arquivos JSON.
 
-### Example Configuration [api_config.json](api_config.json)
+Neste repositório é forneçido um arquivo de exemplo: [api_config.json](api_config.json)  
+Nele está definido a criação de dois servidores que rodam simultaneamente em diferentes portas.
+
+Servidores herdam configurações globais caso não especificadas.
+> Por esse motivo é obrigatório ter todas as configurações globais no arquivo JSON.
+
+### Exemplo
 
 ```json
 {
@@ -88,22 +100,21 @@ The API supports flexible configuration through JSON files. By default, it runs 
 }
 ```
 
-Servers inherit global timeout settings unless overridden.
-
 ---
 
-##  API Endpoints (From default config)
+##  API Endpoints (make run)
 
-### Server 1 (Port 8080) - Reverse API
+### Servidor 1 (Porta 8080) - Reverse API
 - **GET /healthz** → `{"status": "ok"}`
 - **POST /v1/reverse** → `{"input": "your_input", "output": "your_input_reversed"}`
 
-### Server 2 (Port 8081) - Ping API
+### Servidor 2 (Porta 8081) - Ping API
 - **GET /healthz** → `{"status": "ok"}`
 - **GET /v1/ping** → `pong`
 
-### Error format
-All non-2xx responses use consistent JSON structure:
+### Formato de Erro
+
+Respostas com status diferente de 2xx (Ex.: 400, 401, etc) utiliza estrutura JSON:
 ```json
 {
   "error": "<HTTP status description>",
@@ -111,9 +122,9 @@ All non-2xx responses use consistent JSON structure:
 }
 ```
 
-Examples:
+Exemplos:
 
-- 400 Bad Request (invalid JSON):
+- 400 Bad Request (JSON inválido):
 ```json
 {
   "error": "Bad Request",
@@ -130,35 +141,6 @@ Examples:
 
 ---
 
-## Features
+## Licença
 
-### Implemented
-- ✅ Multi-server support from single binary
-- ✅ JSON-based configuration
-- ✅ Request size limiting (1MB max)
-- ✅ Content-Type validation
-- ✅ Custom error handlers (404, 405)
-- ✅ Consistent error response format
-- ✅ UTF-8 support (including emoji and international characters)
-
-### Security & Validation
-- Enforces `Content-Type: application/json` for POST requests
-- Limits request body size to prevent abuse
-- Disallows unknown JSON fields in resquest body
-- Proper timeout configuration per server
-
----
-
-## Router Choice
-
-**`httprouter`** was chosen for:
-- **High performance:** Optimized for many routes with minimal allocations
-- **Expressive patterns:** Support for parameters (`/users/:id`) and wildcards (`/*filepath`)
-- **Zero garbage:** Careful memory management for production workloads
-- **Simplicity:** Clean API that complements Go's `net/http`
-
----
-
-## License
-
-BSD-2-Clause © 2025 Renato Miranda Goncalves. See [LICENSE](LICENSE) for details.
+[LICENSE](LICENSE) BSD-2-Clause © 2025 Renato Miranda Goncalves.
