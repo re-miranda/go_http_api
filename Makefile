@@ -7,7 +7,7 @@ build: $(PKG)
 	@go build -o $(BIN)/$(BIN_NAME) $(PKG)
 
 run: build
-	@$(BIN)/$(BIN_NAME)
+	@$(BIN)/$(BIN_NAME) -config api_config.json
 
 all: run
 
