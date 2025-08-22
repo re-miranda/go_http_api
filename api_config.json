@@ -42,6 +42,38 @@
 					"Handler": "PingHandler"
 				}
 			]
+		},
+		{
+			"Name":	"Webview",
+			"Host": "0.0.0.0",
+			"Port": "80",
+			"Routes": [
+				{
+					"Path": "/",
+					"Method": "GET",
+					"Handler": "IndexHandler"
+				},
+				{
+					"Path": "/generic.html",
+					"Method": "GET",
+					"Handler": "GenericHandler"
+				},
+				{
+					"Path": "/elements.html",
+					"Method": "GET",
+					"Handler": "ElementsHandler"
+				},
+				{
+					"Path": "/assets/*filepath",
+					"Method": "SERVE_DIR",
+					"Handler": "/Users/remiranda/go/go_http_api/public/assets"
+				},
+				{
+					"Path": "/images/*filepath",
+					"Method": "SERVE_DIR",
+					"Handler": "/Users/remiranda/go/go_http_api/public/images"
+				}
+			]
 		}
 	]
 }

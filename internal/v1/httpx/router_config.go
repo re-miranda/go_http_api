@@ -13,8 +13,8 @@ func newRouter(routes []RoutesJSON) *httprouter.Router{
 	for _, n := range routes {
 		// Get handler and return if not found
 		handler := getHandler(n.Handler)
-		if handler == nil {
-			log.Fatal("Handler not found: getHandler() failed")
+		if handler == nil && n.Method != "SERVE_DIR" {
+			log.Fatal("Handler not found: getHandler() failed on path", n.Path)
 		}
 
 		switch n.Method {
@@ -22,6 +22,8 @@ func newRouter(routes []RoutesJSON) *httprouter.Router{
 			router.GET(n.Path, handler)
 			case "POST":
 			router.POST(n.Path, handler)
+			case "SERVE_DIR":
+			router.ServeFiles(n.Path, http.Dir(n.Handler))
 		}
 	}
 
@@ -45,6 +47,12 @@ func getHandler(handlerName string) func(w http.ResponseWriter, r *http.Request,
 		return handlers.PingHandler
 		case "ReverseHandler":
 		return handlers.ReverseHandler
+		case "IndexHandler":
+		return handlers.IndexHandler
+		case "GenericHandler":
+		return handlers.GenericHandler
+		case "ElementsHandler":
+		return handlers.ElementsHandler
 	}
 	return nil
 }
