@@ -1,6 +1,7 @@
 package httpx
 
 import (
+	"log"
 	"net/http"
 	"github.com/julienschmidt/httprouter"
 	"github.com/re-miranda/go_http_api/internal/v1/httpx/handlers"
@@ -13,7 +14,7 @@ func newRouter(routes []RoutesJSON) *httprouter.Router{
 		// Get handler and return if not found
 		handler := getHandler(n.Handler)
 		if handler == nil {
-			return nil
+			log.Fatal("Handler not found: getHandler() failed")
 		}
 
 		switch n.Method {
