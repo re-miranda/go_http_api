@@ -114,7 +114,7 @@ Servidores herdam configurações globais caso não especificadas.
 
 ### Formato de Erro
 
-Respostas com status diferente de 2xx (Ex.: 400, 401, etc) utiliza estrutura JSON:
+Respostas com status diferente de 2xx (Ex.: 400, 401, etc) utilizam estrutura JSON:
 ```json
 {
   "error": "<HTTP status description>",
