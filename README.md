@@ -9,8 +9,6 @@
 - Fácil configuração utilizando arquivo json
 - Múltiplos servidores com regras e rotas independentes específicas e/ou globais
 
----
-
 ## Por que minimalista?
 
 > Menos overhead para a manutenção do código e ganhos de performance.
@@ -102,7 +100,7 @@ Servidores herdam configurações globais caso não especificadas.
 
 ---
 
-##  API Endpoints (make run)
+##  API Endpoints (Usando a config de exemplo anterior)
 
 ### Servidor 1 (Porta 8080) - Reverse API
 - **GET /healthz** → `{"status": "ok"}`
@@ -140,7 +138,5 @@ Exemplos:
 ```
 
 ---
-
-## Licença
 
 [LICENSE](LICENSE) BSD-2-Clause © 2025 Renato Miranda Goncalves.
